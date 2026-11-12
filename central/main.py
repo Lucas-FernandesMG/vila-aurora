@@ -1,25 +1,28 @@
-"""API central FastAPI. Execução: uvicorn central.main:app"""
+"""API central FastAPI."""
 import sqlite3
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from central import db
+from central import auth, db
 from central.routes import router
 
 
 def create_app(db_path=None):
-    """Cria a aplicação. O banco é criado automaticamente na inicialização."""
     path = db_path or db.DEFAULT_DB_PATH
 
     @asynccontextmanager
     async def lifespan(app):
         db.init_db(path)
+        auth.init_auth_db(path)
         yield
 
-    app = FastAPI(title="Rede Comunitária Vila Aurora - API Central", version="0.1.0",
-                  lifespan=lifespan)
+    app = FastAPI(
+        title="Rede Comunitária Vila Aurora - API Central",
+        version="0.2.0",
+        lifespan=lifespan,
+    )
     app.state.db_path = path
     app.include_router(router)
 
@@ -29,7 +32,9 @@ def create_app(db_path=None):
 
     @app.exception_handler(sqlite3.Error)
     async def sqlite_error_handler(request: Request, exc: sqlite3.Error):
-        return JSONResponse(status_code=503, content={"detail": "Banco de dados indisponível"})
+        return JSONResponse(
+            status_code=503, content={"detail": "Banco de dados indisponível"}
+        )
 
     return app
 

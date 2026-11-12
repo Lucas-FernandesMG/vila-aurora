@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from central import db
+from central import auth, db
 from central.main import create_app
 
 
@@ -11,9 +11,17 @@ def db_path(tmp_path):
 
 
 @pytest.fixture
-def client(db_path):
-    # O context manager executa o lifespan, que cria o banco temporário.
+def client(db_path, monkeypatch):
+    monkeypatch.setenv("VILA_AUTH_SECRET", "test-secret-" + "x" * 40)
     with TestClient(create_app(db_path)) as c:
+        secret = "JBSWY3DPEHPK3PXP"
+        auth.create_operator(db_path, "test_admin", "Senha-Teste-123!", "admin", secret)
+        token = c.post("/api/auth/login", json={
+            "username": "test_admin",
+            "password": "Senha-Teste-123!",
+            "totp_code": auth._totp_counter(secret),
+        }).json()["access_token"]
+        c.headers["Authorization"] = "Bearer " + token
         yield c
 
 
@@ -67,7 +75,7 @@ def test_telemetry_empty_then_filtered(client, db_path):
     _insert_telemetry(db_path)
     rows = client.get("/api/telemetry").json()
     assert len(rows) == 3
-    assert rows[0]["value"] == 52.0  # mais recente primeiro
+    assert rows[0]["value"] == 52.0
     assert len(client.get("/api/telemetry", params={"space_id": "centro", "limit": 2}).json()) == 2
     assert client.get("/api/telemetry", params={"space_id": "escola"}).json() == []
 

@@ -1,10 +1,13 @@
 
 from fastapi.testclient import TestClient
 
+from central import auth
+
 from central.main import create_app
 
 
-def test_sync_accepts_batch_and_prevents_duplicates(tmp_path):
+def test_sync_accepts_batch_and_prevents_duplicates(tmp_path, monkeypatch):
+    monkeypatch.setenv("VILA_AUTH_SECRET", "test-secret-" + "x" * 40)
     db_path = tmp_path / "central_sync.db"
     app = create_app(db_path=str(db_path))
 
@@ -45,6 +48,18 @@ def test_sync_accepts_batch_and_prevents_duplicates(tmp_path):
         assert second.status_code == 200
         assert second.json()["accepted"] == 0
         assert second.json()["duplicated"] == 2
+
+        # Autentica a consulta humana ap?s testar a sincroniza??o do agente.
+        secret = "JBSWY3DPEHPK3PXP"
+        auth.create_operator(
+            db_path, "sync_test", "Senha-Sync-Teste-123!", "admin", secret
+        )
+        user = auth.authenticate(
+            db_path, "sync_test", "Senha-Sync-Teste-123!",
+            auth._totp_counter(secret)
+        )
+        token = auth.issue_token(user)
+        client.headers["Authorization"] = "Bearer " + token
 
         telemetry = client.get("/api/telemetry")
 
