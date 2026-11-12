@@ -4,12 +4,14 @@ from fastapi.testclient import TestClient
 from central import auth
 
 from central.main import create_app
+from central.mtls import require_agent_certificate
 
 
 def test_sync_accepts_batch_and_prevents_duplicates(tmp_path, monkeypatch):
     monkeypatch.setenv("VILA_AUTH_SECRET", "test-secret-" + "x" * 40)
     db_path = tmp_path / "central_sync.db"
     app = create_app(db_path=str(db_path))
+    app.dependency_overrides[require_agent_certificate] = lambda: "centro"
 
     readings = [
         {
@@ -70,6 +72,7 @@ def test_sync_accepts_batch_and_prevents_duplicates(tmp_path, monkeypatch):
 def test_sync_rejects_device_from_another_space(tmp_path):
     db_path = tmp_path / "central_invalid.db"
     app = create_app(db_path=str(db_path))
+    app.dependency_overrides[require_agent_certificate] = lambda: "centro"
 
     readings = [
         {

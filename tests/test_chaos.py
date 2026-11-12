@@ -11,6 +11,10 @@ from agent.local_db import (
 )
 from agent.sync import sync_pending
 from central.main import app
+from central.mtls import require_agent_certificate
+
+# Simula a identidade mTLS nos testes HTTP locais.
+app.dependency_overrides[require_agent_certificate] = lambda: 'centro'
 
 
 @pytest.fixture
@@ -49,6 +53,7 @@ def test_offline_preserves_local_readings(environment):
         db_path,
         "centro",
         "http://127.0.0.1:1",
+        allow_insecure_http=True,
     )
 
     assert result["status"] == "offline"
@@ -86,6 +91,7 @@ def test_recovery_synchronizes_pending_readings(environment, tmp_path):
                 db_path,
                 "centro",
                 "http://central.test",
+                allow_insecure_http=True,
             )
         finally:
             agent.sync.httpx.post = original_post
@@ -122,7 +128,7 @@ def test_repeated_sync_does_not_duplicate_events(environment, tmp_path):
         agent.sync.httpx.post = local_post
 
         try:
-            first = sync_pending(db_path, "centro", "http://central.test")
+            first = sync_pending(db_path, "centro", "http://central.test", allow_insecure_http=True)
 
             # Simula perda da confirmação: os eventos voltam a ficar pendentes.
             from agent.local_db import connect
@@ -131,7 +137,7 @@ def test_repeated_sync_does_not_duplicate_events(environment, tmp_path):
                     "UPDATE telemetry SET sync_status = 'pending'"
                 )
 
-            second = sync_pending(db_path, "centro", "http://central.test")
+            second = sync_pending(db_path, "centro", "http://central.test", allow_insecure_http=True)
 
         finally:
             agent.sync.httpx.post = original_post

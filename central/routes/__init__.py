@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from central import auth, db
 from central.security import current_operator, require_roles
+from central.mtls import require_agent_certificate
 
 router = APIRouter()
 LIMIT = Query(100, ge=1, le=1000, description="Máximo de registros")
@@ -131,13 +132,25 @@ def status(request: Request, _user=Depends(current_operator)):
 
 
 @router.post("/api/sync/{agent_id}")
-def sync_telemetry(agent_id: str, request: Request, payload: dict = Body(...)):
-    """Endpoint de sincronização de agente; não usa sessão humana."""
+def sync_telemetry(
+    agent_id: str,
+    request: Request,
+    payload: dict = Body(...),
+    authenticated_agent: str = Depends(require_agent_certificate),
+):
+    """Sincronizacao de agente autenticada por certificado mTLS."""
+    if authenticated_agent != agent_id:
+        raise HTTPException(status_code=403, detail="Identidade de agente incompativel")
+
     readings = payload.get("readings")
     if not isinstance(readings, list):
         raise HTTPException(status_code=400, detail="O campo readings deve ser uma lista")
+
     try:
-        result = db.receive_telemetry_batch(_path(request), agent_id, readings)
+        result = db.receive_telemetry_batch(
+            _path(request), authenticated_agent, readings
+        )
     except (ValueError, db.NotFoundError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return {"status": "ok", "agent_id": agent_id, **result}
+
+    return {"status": "ok", "agent_id": authenticated_agent, **result}
