@@ -1,0 +1,23 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+data/**/*.db
+data/**/*.db-journal
+
+# Dados locais, certificados, chaves privadas, logs e modelos
+/data/
+
+# Segredos e credenciais
+.env
+.env.*
+!.env.example
+*.key
+*.p12
+*.pfx
+*.pem
+
+# Arquivos temporários
+*.log
+.DS_Store
+Thumbs.db

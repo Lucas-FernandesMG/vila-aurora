@@ -1,0 +1,38 @@
+{
+  "agent_id": "escola",
+  "space_name": "Escola Municipal",
+  "space_kind": "school",
+  "local_db": "agents/escola/local.db",
+  "devices": [
+    {
+      "id": "escola-energia-01",
+      "name": "Medidor de energia",
+      "type": "energy"
+    },
+    {
+      "id": "escola-agua-01",
+      "name": "Sensor de nível de água",
+      "type": "water_level"
+    },
+    {
+      "id": "escola-temperatura-01",
+      "name": "Sensor de temperatura",
+      "type": "temperature"
+    },
+    {
+      "id": "escola-umidade-01",
+      "name": "Sensor de umidade",
+      "type": "humidity"
+    },
+    {
+      "id": "escola-conectividade-01",
+      "name": "Monitor de conectividade",
+      "type": "connectivity"
+    },
+    {
+      "id": "escola-bomba-01",
+      "name": "Bomba d'água",
+      "type": "pump"
+    }
+  ]
+}

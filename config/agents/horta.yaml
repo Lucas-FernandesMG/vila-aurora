@@ -1,0 +1,38 @@
+{
+  "agent_id": "horta",
+  "space_name": "Horta e Cozinha Solidária",
+  "space_kind": "kitchen_garden",
+  "local_db": "agents/horta/local.db",
+  "devices": [
+    {
+      "id": "horta-energia-01",
+      "name": "Medidor de energia",
+      "type": "energy"
+    },
+    {
+      "id": "horta-agua-01",
+      "name": "Sensor de nível de água",
+      "type": "water_level"
+    },
+    {
+      "id": "horta-temperatura-01",
+      "name": "Sensor de temperatura",
+      "type": "temperature"
+    },
+    {
+      "id": "horta-umidade-01",
+      "name": "Sensor de umidade",
+      "type": "humidity"
+    },
+    {
+      "id": "horta-conectividade-01",
+      "name": "Monitor de conectividade",
+      "type": "connectivity"
+    },
+    {
+      "id": "horta-bomba-01",
+      "name": "Bomba d'água",
+      "type": "pump"
+    }
+  ]
+}

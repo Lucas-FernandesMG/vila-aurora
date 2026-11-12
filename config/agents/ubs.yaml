@@ -1,0 +1,38 @@
+{
+  "agent_id": "ubs",
+  "space_name": "UBS",
+  "space_kind": "health_unit",
+  "local_db": "agents/ubs/local.db",
+  "devices": [
+    {
+      "id": "ubs-energia-01",
+      "name": "Medidor de energia",
+      "type": "energy"
+    },
+    {
+      "id": "ubs-agua-01",
+      "name": "Sensor de nível de água",
+      "type": "water_level"
+    },
+    {
+      "id": "ubs-temperatura-01",
+      "name": "Sensor de temperatura",
+      "type": "temperature"
+    },
+    {
+      "id": "ubs-umidade-01",
+      "name": "Sensor de umidade",
+      "type": "humidity"
+    },
+    {
+      "id": "ubs-conectividade-01",
+      "name": "Monitor de conectividade",
+      "type": "connectivity"
+    },
+    {
+      "id": "ubs-bomba-01",
+      "name": "Bomba d'água",
+      "type": "pump"
+    }
+  ]
+}

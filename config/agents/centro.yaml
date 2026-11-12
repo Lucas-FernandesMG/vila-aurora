@@ -1,0 +1,38 @@
+{
+  "agent_id": "centro",
+  "space_name": "Centro Comunitário",
+  "space_kind": "community_center",
+  "local_db": "agents/centro/local.db",
+  "devices": [
+    {
+      "id": "centro-energia-01",
+      "name": "Medidor de energia",
+      "type": "energy"
+    },
+    {
+      "id": "centro-agua-01",
+      "name": "Sensor de nível de água",
+      "type": "water_level"
+    },
+    {
+      "id": "centro-temperatura-01",
+      "name": "Sensor de temperatura",
+      "type": "temperature"
+    },
+    {
+      "id": "centro-umidade-01",
+      "name": "Sensor de umidade",
+      "type": "humidity"
+    },
+    {
+      "id": "centro-conectividade-01",
+      "name": "Monitor de conectividade",
+      "type": "connectivity"
+    },
+    {
+      "id": "centro-bomba-01",
+      "name": "Bomba d'água",
+      "type": "pump"
+    }
+  ]
+}

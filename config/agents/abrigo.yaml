@@ -1,0 +1,38 @@
+{
+  "agent_id": "abrigo",
+  "space_name": "Abrigo de Emergência",
+  "space_kind": "shelter",
+  "local_db": "agents/abrigo/local.db",
+  "devices": [
+    {
+      "id": "abrigo-energia-01",
+      "name": "Medidor de energia",
+      "type": "energy"
+    },
+    {
+      "id": "abrigo-agua-01",
+      "name": "Sensor de nível de água",
+      "type": "water_level"
+    },
+    {
+      "id": "abrigo-temperatura-01",
+      "name": "Sensor de temperatura",
+      "type": "temperature"
+    },
+    {
+      "id": "abrigo-umidade-01",
+      "name": "Sensor de umidade",
+      "type": "humidity"
+    },
+    {
+      "id": "abrigo-conectividade-01",
+      "name": "Monitor de conectividade",
+      "type": "connectivity"
+    },
+    {
+      "id": "abrigo-bomba-01",
+      "name": "Bomba d'água",
+      "type": "pump"
+    }
+  ]
+}
