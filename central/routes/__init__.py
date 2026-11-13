@@ -1,12 +1,16 @@
 """Rotas da API central."""
 from typing import Optional
 
+from fastapi.responses import HTMLResponse
 from fastapi import APIRouter, Body, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
-from central import auth, db
-from central.security import current_operator, require_roles
 from central.mtls import require_agent_certificate
+
+from central import auth, db
+from central.analytics import detect_anomalies
+from central.dashboard import dashboard_response
+from central.security import current_operator, require_roles
 
 router = APIRouter()
 LIMIT = Query(100, ge=1, le=1000, description="Máximo de registros")
@@ -138,19 +142,52 @@ def sync_telemetry(
     payload: dict = Body(...),
     authenticated_agent: str = Depends(require_agent_certificate),
 ):
-    """Sincronizacao de agente autenticada por certificado mTLS."""
+    """Sincronizacao autenticada por certificado mTLS."""
     if authenticated_agent != agent_id:
-        raise HTTPException(status_code=403, detail="Identidade de agente incompativel")
+        raise HTTPException(
+            status_code=403,
+            detail="Identidade de agente incompativel",
+        )
 
     readings = payload.get("readings")
     if not isinstance(readings, list):
-        raise HTTPException(status_code=400, detail="O campo readings deve ser uma lista")
+        raise HTTPException(
+            status_code=400,
+            detail="O campo readings deve ser uma lista",
+        )
 
     try:
         result = db.receive_telemetry_batch(
-            _path(request), authenticated_agent, readings
+            _path(request),
+            authenticated_agent,
+            readings,
         )
     except (ValueError, db.NotFoundError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-    return {"status": "ok", "agent_id": authenticated_agent, **result}
+    return {
+        "status": "ok",
+        "agent_id": authenticated_agent,
+        **result,
+    }
+
+@router.get("/api/anomalies")
+def anomalies(
+    request: Request,
+    metric: str = Query(..., min_length=1, max_length=64),
+    limit: int = Query(1000, ge=8, le=1000),
+    _user=Depends(current_operator),
+):
+    """Analisa leituras de uma m?trica e identifica valores at?picos."""
+    readings = db.query_telemetry(
+        _path(request),
+        metric=metric,
+        limit=limit,
+        offset=0,
+    )
+    return detect_anomalies(readings)
+
+
+@router.get("/dashboard", response_class=HTMLResponse)
+def dashboard():
+    return dashboard_response()
