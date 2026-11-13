@@ -51,7 +51,7 @@ def test_sync_accepts_batch_and_prevents_duplicates(tmp_path, monkeypatch):
         assert second.json()["accepted"] == 0
         assert second.json()["duplicated"] == 2
 
-        # Autentica a consulta humana ap?s testar a sincroniza??o do agente.
+        # Autentica a consulta humana após testar a sincronização do agente.
         secret = "JBSWY3DPEHPK3PXP"
         auth.create_operator(
             db_path, "sync_test", "Senha-Sync-Teste-123!", "admin", secret

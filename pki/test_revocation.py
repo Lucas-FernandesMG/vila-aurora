@@ -41,12 +41,12 @@ def run(args, expected=True):
 
 def main():
     if not Path(OPENSSL).exists():
-        raise FileNotFoundError("OpenSSL n?o encontrado.")
+        raise FileNotFoundError("OpenSSL não encontrado.")
 
     if not CONFIG.exists() or not CA_CERT.exists():
-        raise FileNotFoundError("Configura??o ou certificado da CA n?o encontrado.")
+        raise FileNotFoundError("Configuração ou certificado da CA não encontrado.")
 
-    print("[1/6] Emitindo certificado tempor?rio...")
+    print("[1/6] Emitindo certificado temporário...")
 
     run([
         "req", "-new", "-newkey", "rsa:2048", "-nodes",
@@ -104,9 +104,9 @@ def main():
     print(output)
 
     if "certificate revoked" not in output.lower():
-        raise RuntimeError("Falha: a rejei??o por revoga??o n?o foi confirmada.")
+        raise RuntimeError("Falha: a rejeição por revogação não foi confirmada.")
 
-    print("\nRESULTADO: TESTE DE REVOGA??O APROVADO.")
+    print("\nRESULTADO: TESTE DE REVOGAÇÃO APROVADO.")
     print(f"Certificado de teste: {cert.relative_to(ROOT)}")
     print(f"CRL atualizada: {CRL.relative_to(ROOT)}")
 

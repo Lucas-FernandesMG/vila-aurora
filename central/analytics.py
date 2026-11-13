@@ -1,4 +1,4 @@
-"""Detec??o de anomalias por Isolation Forest simplificado, sem depend?ncias externas."""
+"""Detecção de anomalias por Isolation Forest simplificado, sem dependências externas."""
 import math
 import random
 
@@ -44,7 +44,7 @@ def detect_anomalies(records, trees=64, sample_size=128,
     if not 0 < contamination <= 0.20:
         raise ValueError("contamination deve estar entre 0 e 0.20")
     if trees < 16:
-        raise ValueError("S?o necess?rias pelo menos 16 ?rvores")
+        raise ValueError("São necessárias pelo menos 16 árvores")
 
     valid = []
     for record in records:
@@ -59,7 +59,7 @@ def detect_anomalies(records, trees=64, sample_size=128,
         return {
             "model": "Isolation Forest simplificado (stdlib)",
             "status": "insufficient_data",
-            "message": "S?o necess?rias pelo menos 8 leituras num?ricas.",
+            "message": "São necessárias pelo menos 8 leituras num?ricas.",
             "total": len(valid),
             "anomaly_count": 0,
             "results": [],

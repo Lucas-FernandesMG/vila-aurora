@@ -13,7 +13,7 @@ def test_detects_sql_injection_and_requires_approval():
     alert = result["alerts"][0]
     assert alert["rule_id"] == "DET-SQLI-001"
     assert alert["human_approval_required"] is True
-    assert "Nenhuma a??o destrutiva" in alert["automated_action"]
+    assert "Nenhuma ação destrutiva" in alert["automated_action"]
 
 
 def test_wan_event_is_detected_without_high_impact_approval():
@@ -26,7 +26,7 @@ def test_wan_event_is_detected_without_high_impact_approval():
 
 
 def test_ignores_unrecognized_events():
-    result = correlate_events([{"message": "Opera??o normal"}])
+    result = correlate_events([{"message": "Operação normal"}])
     assert result["detections"] == 0
 
 

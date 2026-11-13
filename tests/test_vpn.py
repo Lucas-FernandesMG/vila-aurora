@@ -77,7 +77,7 @@ def test_public_keys_match_private_keys():
     wg = find_wg()
     if not wg:
         import pytest
-        pytest.skip("WireGuard wg.exe n?o encontrado; valida??o criptogr?fica adiada")
+        pytest.skip("WireGuard wg.exe não encontrado; validação criptográfica adiada")
 
     central = read_config(CENTRAL)
     client = read_config(CLIENT)
