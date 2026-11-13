@@ -4,3 +4,4 @@ pytest
 httpx
 
 anycorn
+paho-mqtt>=2.1,<3

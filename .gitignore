@@ -21,3 +21,21 @@ data/**/*.db-journal
 *.log
 .DS_Store
 Thumbs.db
+
+# Bancos de dados locais
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# Chaves e credenciais adicionais
+*.pub
+*.csr
+*.srl
+*.crt
+*.cer
+*.p12
+*.pfx
+
+# Configurações locais
+secrets/
