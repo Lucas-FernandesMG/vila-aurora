@@ -128,7 +128,41 @@ Se a política de execução bloquear a ativação:
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
-## 10. Inicialização
+## 10. Configuração de autenticação
+
+Antes de iniciar a API, defina o segredo usado para assinar os tokens de sessão.
+No Git Bash:
+
+```text
+export VILA_AUTH_SECRET="$(python -c 'import secrets; print(secrets.token_urlsafe(32))')"
+```
+
+No PowerShell:
+
+```powershell
+$env:VILA_AUTH_SECRET = [Convert]::ToBase64String([byte[]](1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+```
+
+O segredo deve ter pelo menos 32 caracteres e precisa ser definido no mesmo
+terminal em que a API for iniciada. Ele não é o código do aplicativo
+Authenticator: o Authenticator gera o código MFA de seis dígitos usado no login.
+
+Crie o primeiro operador local antes do primeiro acesso:
+
+```text
+python scripts/create_operator.py
+```
+
+O script solicita o usuário, uma senha com pelo menos 12 caracteres e o papel
+(`admin`, `operator` ou `auditor`). Ao final, cadastre o segredo TOTP exibido
+no Google Authenticator, Aegis ou outro aplicativo compatível.
+
+Os operadores são persistidos no banco SQLite local
+`data/central/central.db`. Esse arquivo e a pasta `data/` são ignorados pelo
+Git para evitar o compartilhamento de credenciais, hashes e segredos MFA.
+Assim, cada nova instalação precisa criar seu próprio operador.
+
+## 11. Inicialização
 
 API central:
 
@@ -170,7 +204,7 @@ Broker MQTT:
 
 Execute o comando a partir da raiz do projeto, após gerar os certificados e provisionar os arquivos locais necessários.
 
-## 11. Testes
+## 12. Testes
 
 Execute:
 
@@ -184,7 +218,7 @@ python -m pytest -v
 - Nenhuma falha.
 - Um aviso de depreciação relacionado à integração Starlette e HTTPX.
 
-## 12. Limitações do laboratório
+## 13. Limitações do laboratório
 
 - Não foram utilizados sensores físicos.
 - Os dados de telemetria são simulados.
@@ -195,7 +229,7 @@ python -m pytest -v
 - Não foi utilizado LLM na solução.
 - A solução não foi implantada em infraestrutura de produção.
 
-## 13. Segurança do repositório
+## 14. Segurança do repositório
 
 Não publicar:
 
@@ -208,7 +242,7 @@ Não publicar:
 
 Os arquivos sensíveis devem ser gerados localmente por meio dos scripts de provisionamento.
 
-## 14. Estado da validação
+## 15. Estado da validação
 
 O projeto possui testes automatizados e validações reais de componentes no laboratório local. As limitações de infraestrutura e os testes ainda pendentes devem ser considerados na avaliação final.
 
